@@ -2,14 +2,12 @@
 T N T Clock
 Watch out!
 
+23.12.2023
+
 https://github.com/prashnts/tnt-clock
 '''
 import utime as time
-import machine
-import esp
-import io
 import json
-import os
 import random
 from machine import I2C, Pin, RTC
 from ht16k33segment14 import HT16K33Segment14
@@ -151,12 +149,16 @@ except OSError:
     write_conf(config)
 
 def do_explode():
+    display.set_brightness(6)
     show_str(' 3  ')
     time.sleep_ms(500)
+    display.set_brightness(8)
     show_str('  2 ')
     time.sleep_ms(500)
+    display.set_brightness(10)
     show_str('   1')
     time.sleep_ms(500)
+    display.set_brightness(14)
     show_str('boum')
     time.sleep_ms(1000)
 
