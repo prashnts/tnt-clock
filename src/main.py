@@ -1,3 +1,9 @@
+'''
+T N T Clock
+Watch out!
+
+https://github.com/prashnts/tnt-clock
+'''
 import utime as time
 import machine
 import esp
@@ -8,7 +14,6 @@ import random
 from machine import I2C, Pin, RTC
 from ht16k33segment14 import HT16K33Segment14
 from ds3231 import DS3231
-from inputs import Switch
 
 
 i2c = I2C(0)
@@ -18,35 +23,9 @@ display = HT16K33Segment14(i2c, is_ht16k33=True)
 display.set_brightness(2)
 display.clear()
 
-# display.set_character(chr(a), 0, point_state)
-# display.set_number(a, 0, point_state)
-# display.draw()
-
-
 mode_pin = Pin(27, Pin.IN, Pin.PULL_UP)
-mode_sw = Switch(mode_pin)
-mode_sw_value = False
-mode_has_new_val = False
-
 minus_pin = Pin(25, Pin.IN, Pin.PULL_UP)
-minus_sw = Switch(minus_pin)
-minus_has_new_val = False
-
 plus_pin = Pin(26, Pin.IN, Pin.PULL_UP)
-plus_sw = Switch(plus_pin)
-plus_has_new_val = False
-
-def wait_pin_change(pin):
-    # wait for pin to change value
-    # it needs to be stable for a continuous 20ms
-    cur_value = pin.value()
-    active = 0
-    while active < 20:
-        if pin.value() != cur_value:
-            active += 1
-        else:
-            active = 0
-        time.sleep_ms(1)
 
 def read_conf():
     with open('.userconf', 'r') as f:
