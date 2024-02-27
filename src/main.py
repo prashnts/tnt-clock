@@ -114,13 +114,21 @@ def set_dst(dst_flag):
         time.sleep_ms(10)
 
 
+try:
+    config = read_conf()
+except OSError:
+    print("No config file found, creating one.")
+    config = {'dst': 0, 'brightness': 12}
+    write_conf(config)
+
+max_brightness = config.get('brightness', 12)
+min_brightness = 1
+
+
 def set_time():
     display.clear()
-    display.set_brightness(14)
-    display.set_character("S", 0, False)
-    display.set_character("E", 1, False)
-    display.set_character("T", 2, False)
-    display.draw()
+    display.set_brightness(max_brightness)
+    show_str('SET')
     time.sleep_ms(500)
 
     t = list(ds.datetime())
@@ -141,24 +149,15 @@ def set_time():
     write_conf(config)
     do_explode()
 
-try:
-    config = read_conf()
-except OSError:
-    print("No config file found, creating one.")
-    config = {'dst': 0}
-    write_conf(config)
 
 def do_explode():
-    display.set_brightness(6)
+    display.set_brightness(max_brightness)
     show_str(' 3  ')
     time.sleep_ms(500)
-    display.set_brightness(8)
     show_str('  2 ')
     time.sleep_ms(500)
-    display.set_brightness(10)
     show_str('   1')
     time.sleep_ms(500)
-    display.set_brightness(14)
     show_str('boum')
     time.sleep_ms(1000)
 
@@ -174,6 +173,26 @@ while True:
         # enter setup mode.
         set_time()
         config = read_conf()
+
+    if minus_pin.value() == 0:
+        # decrease brightness
+        max_brightness -= 1
+        if max_brightness <= min_brightness:
+            max_brightness = min_brightness
+        config['brightness'] = max_brightness
+        write_conf(config)
+        display.set_brightness(max_brightness)
+        time.sleep_ms(42)
+
+    if plus_pin.value() == 0:
+        # increase brightness
+        max_brightness += 1
+        if max_brightness >= 15:
+            max_brightness = 15
+        config['brightness'] = max_brightness
+        write_conf(config)
+        display.set_brightness(max_brightness)
+        time.sleep_ms(42)
 
     if random.random() <= 0.001:
         do_explode()
@@ -194,9 +213,10 @@ while True:
     display.set_character(minute[1], 3, False)
 
     if second_pulse:
-        display.set_brightness(14)
+        display.set_brightness(max_brightness)
     else:
-        display.set_brightness(8)
+        display.set_brightness(int(max(max_brightness * 0.75, min_brightness)))
 
+    # print(max_brightness)
     display.draw()
-    time.sleep(0.2)
+    time.sleep_ms(200)
