@@ -1,6 +1,8 @@
 # tnt-clock
 A clock that looks like tnt
 
+[Design files are available on Printables](https://www.printables.com/model/1786956-tnt-clock)
+
 
 ![3D Render](model/tnt-clock%20v24.png)
 
